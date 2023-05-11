@@ -6,7 +6,8 @@ const Stack = createStackNavigator();
 import HomeInside from './HomeInside';
 import MyPets from './MyPets';
 
-export default function Main({ username, email }) {
+export default function Main({ userid, username, email }) {
+  // console.log('Id Main => ', userid);
   return (
     <Stack.Navigator
       initialRouteName='Home'
@@ -20,7 +21,7 @@ export default function Main({ username, email }) {
         name="MyPets"
         component={MyPets}
         options={{ title: 'Meus Animais de Estimação' }}
-        initialParams={{ username, email }}
+        initialParams={{ userid, username, email }}
       />
     </Stack.Navigator>
   );

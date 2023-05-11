@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -25,25 +25,6 @@ export default function TelaDeLogin({ navigation }) {
   const [password, setPassword] = useState('');
   const [erroPassword, setErroPassword] = useState(null);
   const [users, setUsers] = useState({});
-
-  useEffect(() => {
-    db.transaction(function (txn) {
-      txn.executeSql(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='table_users'",
-        [],
-        function (tx, res) {
-          console.log('item: ', res.rows.length);
-          if (res.rows.length == 0) {
-            txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS table_users(user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name VARCHAR(255), user_email VARCHAR(255), user_password VARCHAR(255))',
-              []
-            );
-          }
-        }
-      );
-    });
-
-  }, [navigation]);
 
   function handleUsernameChange(text) {
     setErroUsername(null); // Limpar o erro anterior

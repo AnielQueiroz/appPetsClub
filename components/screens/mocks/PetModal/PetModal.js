@@ -17,7 +17,7 @@ export default function PetModal({modalVisible, pet, onClose}) {
                     </View>
 
                     <ScrollView style={styles.modalContent} contentContainerStyle={{ alignItems: 'center' }}>
-                        <Text>Nome: {pet.nome}</Text>
+                        <Text>Nome: {pet.pet_name}</Text>
                         <Text>Raça: {pet.raca}</Text>
                         
                         <View style={styles.viewButtons}>

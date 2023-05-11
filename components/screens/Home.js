@@ -10,15 +10,12 @@ import PetShopMapsComponent from './mocks/PetsShopMaps/PetShopMapsComponent';
 import Main from './mocks/Main';
 import MatchPetMainScreen from './mocks/MatchPet/Main';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-function HomeScreen({ username, email }) {
-  return <Main username={username} email={email} />;
+function HomeScreen({ userid, username, email }) {
+  return <Main userid={userid} username={username} email={email} />;
 }
 
-function Perfil({ username, email, nav }) {
+function Perfil({ userid, username, email, nav }) {
   const handleLogout = async () => {
-    await AsyncStorage.multiRemove(['username', 'email']);
     nav.replace('Tela de Login');
   };
 
@@ -29,6 +26,7 @@ function Perfil({ username, email, nav }) {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
+      <Text>ID: {userid}</Text>
       <Text>Usuário: {username}</Text>
       <Text>Email: {email}</Text>
 
@@ -59,15 +57,16 @@ function MatchPetMain() {
   )
 }
 
-function SideBar({ username, email, nav }) {
+function SideBar({ userid, username, email, nav }) {
+  // console.log('Dentro do SideBar => ', userid)
   return (
     <Drawer.Navigator useLegacyImplementation initialRouteName="Principal">
       <Drawer.Screen name="Principal">
-        {() => <HomeScreen username={username} email={email} />}
+        {() => <HomeScreen userid={userid} username={username} email={email} />}
       </Drawer.Screen>
 
       <Drawer.Screen name="Perfil">
-        {() => <Perfil username={username} email={email} nav={nav} />}
+        {() => <Perfil userid={userid} username={username} email={email} nav={nav} />}
       </Drawer.Screen>
 
       <Drawer.Screen name="Pet Shops" component={PetShopMaps} />
@@ -78,16 +77,16 @@ function SideBar({ username, email, nav }) {
 
 const Drawer = createDrawerNavigator();
 
-export default function Home({ navigation }) {
-  const route = useRoute();
+export default function Home({ navigation, route }) {
+  // const route = useRoute();
   const user = route.params.user;
 
-  console.log('USER => ', user)
+  // console.log('USER => ', user)
 
   return (
     <>
       <StatusBar style="dark" />
-      <SideBar username={user.user_name} email={user.user_email} nav={navigation} />
+      <SideBar userid={user.user_id} username={user.user_name} email={user.user_email} nav={navigation} />
     </>
   );
 }

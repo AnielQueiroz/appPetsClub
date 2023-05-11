@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,7 +13,13 @@ import TeladeLogin from './components/screens/TeladeLogin';
 import TeladeCadastro from './components/screens/TeladeCadastro';
 import Home from './components/screens/Home';
 
+import { setupDatabase } from './src/database/database-setup';
+
 export default function App() {
+  useEffect(() => {
+    setupDatabase();
+  }, []);
+
   return (
     <SafeAreaView style={globalStyles.containerApp}>
       <StatusBar style="light" />
