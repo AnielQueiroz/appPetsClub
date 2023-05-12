@@ -21,10 +21,12 @@ export default function MyPets({ route }) {
     const [petName, setPetName] = useState('');
     const [selectedPet, setSelectedPet] = useState('');
     const [selectedPetInfo, setSelectedPetInfo] = useState(null);
+    const [users, setUsers] = useState(null);    
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const loadPets = () => {
+        // console.log('Load Pets => ', userid)
         db.transaction(function (txn) {
             txn.executeSql(
                 'SELECT * FROM table_pets WHERE user_id = ?',
@@ -35,10 +37,26 @@ export default function MyPets({ route }) {
                     for (let i = 0; i < res.rows.length; i++) {
                         var pet = res.rows.item(i);
                         petsTemp.push(pet);
-                        setPets(petsTemp)
-                    }
+                        setPets(petsTemp);
+                      }
                     
-                    // console.log('PETS => ', pets);
+                    console.log('PETS => ', pets);
+                }
+                )
+            })
+    }
+
+    const loadUsers = () => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                'SELECT * FROM table_pets WHERE user_id = ?',
+                [userid],
+                (tx, res) => {
+                    var temp = [];
+                    for (let i = 0; i < res.rows.length; i++)
+                        temp.push(res.rows.item(i));
+                    setUsers(temp);
+                    console.log('USERS => ', users);
                 }
                 )
             })
@@ -46,19 +64,20 @@ export default function MyPets({ route }) {
 
     useEffect(() => {
         loadPets();
+        // loadUsers();
     }, []);
 
     // Adiciona um novo pet a um usuário existente com base no id do usuário
     let insertPet = (petName, userid) => {
-        // console.log(petName, userid);
+        console.log('PET => ', selectedPet);
         if (!petName) {
             Alert.alert('Aviso', 'Seu pet precisa de um nome.');
             return;
         }
         db.transaction(function (tx) {
             tx.executeSql(
-                'INSERT INTO table_pets (pet_name, user_id) VALUES (?, ?)',
-                [petName, userid],
+                'INSERT INTO table_pets (pet_name, user_id, pet_race) VALUES (?, ?, ?)',
+                [petName, userid, selectedPet],
                 (tx, results) => {
                     console.log('Results => ', results.rowsAffected);
                     if (results.rowsAffected > 0) {
@@ -77,13 +96,14 @@ export default function MyPets({ route }) {
 
     // Remove o pet de um usuário existente com base no id do usuário e do pet
     let removePet = (userid, petid) => {
+        // console.log('USERID => ', petid)
         db.transaction(function (tx) {
             tx.executeSql(
                 'DELETE FROM table_pets WHERE user_id = ? AND pet_id = ?',
                 [userid, petid],
                 (tx, results) => {
                     if(results.rowsAffected > 0) {
-                        Alert.alert('Sucesse', 'Pet removido!');
+                        Alert.alert('Sucesso', 'Pet removido!');
                         loadPets();
                     } else {
                         Alert.alert('Erro', 'Falha ao remover o pet');
@@ -109,7 +129,7 @@ export default function MyPets({ route }) {
                         <TouchableOpacity key={index}onPress={() => openPetModal(item)}>
                             {/* <Text key={index}>Pet {index + 1}: {item.nome} - {item.raca}</Text> */}
                             <Text style={styles.textFlatList}>Nome: {item.pet_name}</Text>
-                            <Text style={styles.textFlatList}>Raça: {item.raca}</Text>
+                            <Text style={styles.textFlatList}>Raça: {item.pet_race}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={()=> {
