@@ -10,6 +10,8 @@ import { Dimensions } from 'react-native';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
+import { activeDrawer, drawerNavigatorBg, drawerScreenOptions } from './styles/stylesScreens';
+
 import { DatabaseConnection } from '../../src/database/database-connection';
 
 const db = DatabaseConnection.getConnection();
@@ -248,18 +250,47 @@ function MatchPetMain() {
 function SideBar({ userid, username, email, nav }) {
   // console.log('Dentro do SideBar => ', userid)
   return (
-    <Drawer.Navigator useLegacyImplementation initialRouteName="Principal">
-      <Drawer.Screen name="Principal">
-        {() => <HomeScreen userid={userid} username={username} email={email} />}
-      </Drawer.Screen>
+    <>
+      {/* <StatusBar style="light" /> */}
+      <Drawer.Navigator 
+        drawerContent={SideBar}
+        useLegacyImplementation
+        initialRouteName="Principal"
+        screenOptions={{
+          drawerStyle: { 
+            backgroundColor: drawerNavigatorBg,
+          }, 
+          drawerLabelStyle: {
+            color: '#fff'
+          },
+        }}
+      >
+        <Drawer.Screen 
+          name="Principal"
+          options={drawerScreenOptions}
+        >
+          {() => <HomeScreen userid={userid} username={username} email={email} />}
+        </Drawer.Screen>
 
-      <Drawer.Screen name="Perfil">
-        {() => <Perfil userid={userid} username={username} email={email} nav={nav} />}
-      </Drawer.Screen>
+        <Drawer.Screen 
+          name="Perfil"
+          options={drawerScreenOptions}
+        >
+          {() => <Perfil userid={userid} username={username} email={email} nav={nav} />}
+        </Drawer.Screen>
 
-      <Drawer.Screen name="Pet Shops" component={PetShopMaps} />
-      <Drawer.Screen name="Match Pet" component={MatchPetMain} />
-    </Drawer.Navigator>
+        <Drawer.Screen 
+          name="Pet Shops" 
+          component={PetShopMaps}
+          options={drawerScreenOptions} 
+        />
+        <Drawer.Screen 
+          name="Match Pet" 
+          component={MatchPetMain} 
+          options={drawerScreenOptions}
+        />
+      </Drawer.Navigator>
+    </>
   );
 }
 
@@ -272,10 +303,7 @@ export default function Home({ navigation, route }) {
   // console.log('USER => ', user)
 
   return (
-    <>
-      <StatusBar style="dark" />
-      <SideBar userid={user.user_id} username={user.user_name} email={user.user_email} nav={navigation} />
-    </>
+    <SideBar userid={user.user_id} username={user.user_name} email={user.user_email} nav={navigation} />
   );
 }
 
