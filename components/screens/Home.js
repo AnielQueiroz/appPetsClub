@@ -250,10 +250,7 @@ function MatchPetMain() {
 function SideBar({ userid, username, email, nav }) {
   // console.log('Dentro do SideBar => ', userid)
   return (
-    <>
-      {/* <StatusBar style="light" /> */}
       <Drawer.Navigator 
-        drawerContent={SideBar}
         useLegacyImplementation
         initialRouteName="Principal"
         screenOptions={{
@@ -290,7 +287,6 @@ function SideBar({ userid, username, email, nav }) {
           options={drawerScreenOptions}
         />
       </Drawer.Navigator>
-    </>
   );
 }
 

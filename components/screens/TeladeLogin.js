@@ -74,6 +74,7 @@ export default function TelaDeLogin({ navigation }) {
     validateUser(username, password)
       .then((foundUser) => {
         if (foundUser) {
+          // Alert.alert('Opa', 'Encontrado!')
           navigation.replace('Home', {user: foundUser});
         } else {
           Alert.alert('Erro', 'Nome de usuário ou senha incorretos. Tente novamente.');

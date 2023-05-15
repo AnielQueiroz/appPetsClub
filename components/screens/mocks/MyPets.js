@@ -38,8 +38,10 @@ export default function MyPets({ route }) {
                         var pet = res.rows.item(i);
                         petsTemp.push(pet);
                         setPets(petsTemp);
-                      }
+                    }
                     
+                    setPets(petsTemp);
+
                     console.log('PETS => ', pets);
                 }
                 )
