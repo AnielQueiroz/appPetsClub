@@ -13,7 +13,7 @@ export function validarUsername(username) {
   }
   if (!regex.test(username)) {
     return 'Usuário inválido';
-  }
+  } 
   return '';
 }
 

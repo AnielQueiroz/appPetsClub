@@ -126,7 +126,7 @@ export default function TeladeLogin({ navigation }) {
     <ImageBackground
       source={require('../../assets/cat2.jpg')}
       style={globalStyles.bgImage}>
-      <ScrollView style={globalStyles.containers} contentContainerStyle={{ alignItems: 'center' }}>
+      <ScrollView style={globalStyles.containers} contentContainerStyle={{ alignItems: 'center' }} showsVerticalScrollIndicator={false}>
         <Text style={globalStyles.title}>Tela de Cadastro</Text>
 
         <View style={globalStyles.viewInputs}>

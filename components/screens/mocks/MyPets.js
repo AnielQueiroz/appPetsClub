@@ -14,7 +14,7 @@ import { DatabaseConnection } from '../../../src/database/database-connection';
 const db = DatabaseConnection.getConnection();
 
 export default function MyPets({ route }) {
-    const { userid, username, email } = route.params;
+    const { userid } = route.params;
     // console.log('Dentro do My Pets => ', userid);
 
     const [pets, setPets] = useState([]);

@@ -90,7 +90,7 @@ export default function TelaDeLogin({ navigation }) {
     <ImageBackground
       source={require('../../assets/bgImage.jpg')}
       style={globalStyles.bgImage}>
-      <ScrollView style={globalStyles.containers} contentContainerStyle={{ alignItems: 'center' }}>
+      <ScrollView style={globalStyles.containers} contentContainerStyle={{ alignItems: 'center' }} showsVerticalScrollIndicator={false}>
         <Text style={globalStyles.title}>Tela de Login</Text>
 
         <View style={globalStyles.viewInputs}>

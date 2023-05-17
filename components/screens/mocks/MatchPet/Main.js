@@ -3,8 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-import MatchPet from './MatchPetMaps';
-import Profile from './Profile';
+import MatchPetFlat from './MatchPetFlat';
+import PetDetailsScreen from './PetDetailsScreen';
 
 export default function Main() {
   return (
@@ -13,13 +13,13 @@ export default function Main() {
     >
       <Stack.Screen
         name="Match Pet Main"
-        component={MatchPet}
+        component={MatchPetFlat}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: false }}
+        name="Pet Details"
+        component={PetDetailsScreen}
+        options={({ route }) => ({ headerTitle: route.params.pet.namePet})}
       />
     </Stack.Navigator>
   );
