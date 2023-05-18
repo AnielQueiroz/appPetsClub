@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -57,13 +57,11 @@ export function Perfil({ userid, nav }) {
     loadProfileImage(); // Chama a função diretamente no useEffect
   }, [userid]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      loadUsers();
-    })
-  );
+  useFocusEffect(() => {
+    loadUsers();
+  });
 
-  const loadUsers = () => {
+  const loadUsers = useCallback(() => {
     db.transaction((tx) => {
       tx.executeSql(
         'SELECT user_name, user_email FROM table_users WHERE user_id = ?',
@@ -77,7 +75,7 @@ export function Perfil({ userid, nav }) {
         }
       );
     });
-  };
+  }, [userid]);
 
   const handleLogout = async () => {
     nav.replace('Tela de Login');
