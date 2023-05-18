@@ -9,6 +9,8 @@ import {
   ScrollView
 } from 'react-native';
 
+// import Fingerprint from 'react-native-fingerprint';
+
 import { DatabaseConnection } from '../../src/database/database-connection';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -25,7 +27,8 @@ export default function TeladeLogin({ navigation }) {
   const [erroEmail, setErroEmail] = useState(null);
   const [password, setPassword] = useState('');
   const [erroPassword, setErroPassword] = useState(null);
-  
+  const [biometricData, setBiometricData] = useState('');
+
   function handleEmailChange(text) {
     const erroEmail = validarEmail(text);
     setErroEmail(erroEmail);
@@ -54,6 +57,14 @@ export default function TeladeLogin({ navigation }) {
     if (text === '') {
       setErroPassword('Preencha a senha');
     }
+  }
+
+  function captureBiometricData() {
+    Alert.alert('Aaah', 'Desisto')
+    // Fingerprint.scan().then(result => {
+    //   console.log('BIOMETRIA => ', result.data)
+    //   setBiometricData(result.data);
+    // });
   }
 
   function handleCadastro() {
@@ -94,8 +105,8 @@ export default function TeladeLogin({ navigation }) {
           } else {
             db.transaction(function (tx) {
               tx.executeSql(
-                'INSERT INTO table_users (user_name, user_email, user_password) VALUES (?,?,?)',
-                [username, email, password],
+                'INSERT INTO table_users (user_name, user_email, user_password, biometricData) VALUES (?,?,?,?)',
+                [username, email, password, biometricData],
                 (tx, results) => {
                   console.log('Results: ', results.rowsAffected);
                   if (results.rowsAffected > 0) {
@@ -159,6 +170,14 @@ export default function TeladeLogin({ navigation }) {
             secureTextEntry={true}
           />
           {erroPassword && <Text style={globalStyles.erroMsg}>{erroPassword}</Text>}
+
+          <Text style={globalStyles.titleInput}>Biometria (Opcional):</Text>
+          <TouchableOpacity
+            style={globalStyles.input}
+            onPress={captureBiometricData}
+          >
+            <Icon style={{alignSelf: 'center'}} name='fingerprint' size={40}/>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={globalStyles.buttom}

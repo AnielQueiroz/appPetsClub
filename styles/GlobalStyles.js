@@ -32,6 +32,7 @@ export const globalStyles = StyleSheet.create({
     height: height * 0.08,
     borderRadius: 5,
     backgroundColor: buttomColor,
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

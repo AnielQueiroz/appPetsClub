@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -8,6 +8,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+
+import * as LocalAuthentication from 'expo-local-authentication';
 
 import { DatabaseConnection } from '../../src/database/database-connection';
 
@@ -24,7 +26,59 @@ export default function TelaDeLogin({ navigation }) {
   const [erroUsername, setErroUsername] = useState(null);
   const [password, setPassword] = useState('');
   const [erroPassword, setErroPassword] = useState(null);
-  const [users, setUsers] = useState({});
+  const [firstUser, setFirstUsers] = useState('');
+
+  useEffect(() => {
+    checkBiometry();
+    loadUsers();
+  }, []);
+
+  // Estado para controlar se a biometria está disponível e habilitada
+  const [biometryAvailable, setBiometryAvailable] = useState(false);
+  const [biometryEnabled, setBiometryEnabled] = useState(false);
+
+  // Função chamada para verificar se a biometria está disponível e habilitada:
+  const checkBiometry = async () => {
+    const hasBiometry = await LocalAuthentication.hasHardwareAsync();
+    const isBiometryEnabled = await LocalAuthentication.isEnrolledAsync();
+
+    setBiometryAvailable(hasBiometry);
+    // setBiometryEnabled(isBiometryEnabled);
+  };
+
+  const loadUsers = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM table_users ',
+        [],
+        (tx, res) => {
+          if (res.rows.length >= 0) {
+            const firstUser = res.rows.item(0);
+            setFirstUsers(firstUser);
+            // console.log(firstUser.user_email)
+          }
+        }
+      )
+    })
+  }
+
+  const handleBiometryLogin = async () => {
+    try {
+      const { success } = await LocalAuthentication.authenticateAsync();
+
+      if (success) {
+        const foundUser = await validateUser(firstUser.user_name, firstUser.user_password);
+        if (foundUser) {
+          navigation.replace('Home', { user: foundUser });
+        } else {
+          Alert.alert('Erro', 'Nome de usuário ou senha incorretos. Tente novamente.');
+        }
+      }
+    } catch (error) {
+      console.log('Ocorreu um erro ao autenticar com biometria:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao autenticar com biometria');
+    }
+  };
 
   function handleUsernameChange(text) {
     setErroUsername(null); // Limpar o erro anterior
@@ -57,25 +111,25 @@ export default function TelaDeLogin({ navigation }) {
           (error) => {
             reject(error);
           }
-        )
-      })
-    })
-  }
+        );
+      });
+    });
+  };
 
   const handleLoginPress = () => {
-    if (username === ''){
+    if (username === '') {
       setErroUsername('Preencha o usuário!');
+      return;
     }
-    if (password === ''){
+    if (password === '') {
       setErroPassword('Preencha a senha');
       return;
     }
-
+  
     validateUser(username, password)
       .then((foundUser) => {
         if (foundUser) {
-          // Alert.alert('Opa', 'Encontrado!')
-          navigation.replace('Home', {user: foundUser});
+          navigation.replace('Home', { user: foundUser });
         } else {
           Alert.alert('Erro', 'Nome de usuário ou senha incorretos. Tente novamente.');
         }
@@ -83,8 +137,8 @@ export default function TelaDeLogin({ navigation }) {
       .catch((error) => {
         console.log('Ocorreu um erro ao validar o usuário:', error);
         Alert.alert('Erro', 'Ocorreu um erro ao validar o usuário');
-      })
-  }
+      });
+  };
 
   return (
     <ImageBackground
@@ -116,11 +170,20 @@ export default function TelaDeLogin({ navigation }) {
         <TouchableOpacity
           style={globalStyles.buttom}
           activeOpacity={0.7}
-          onPress={handleLoginPress}
-          >
+          onPress={handleLoginPress}>
           <Icon name="paw" size={30} color="#fff" />
           <Text style={globalStyles.textButtom}>Entrar</Text>
         </TouchableOpacity>
+
+        {biometryAvailable && (
+          <TouchableOpacity
+            style={globalStyles.buttom}
+            activeOpacity={0.7}
+            onPress={handleBiometryLogin}>
+            <Icon name="fingerprint" size={30} color="#fff" />
+            <Text style={globalStyles.textButtom}>Login com Biometria</Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity onPress={() => navigation.navigate('Tela de Cadastro')}>
           <Text style={globalStyles.textDownButtom}>Criar conta</Text>

@@ -12,7 +12,7 @@ export function setupDatabase() {
           console.log('item: ', res.rows.length);
           if (res.rows.length == 0) {
             txn.executeSql(
-              'CREATE TABLE IF NOT EXISTS table_users(user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name VARCHAR(255), user_email VARCHAR(255), user_password VARCHAR(255), profile_image TEXT)',
+              'CREATE TABLE IF NOT EXISTS table_users(user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name VARCHAR(255), user_email VARCHAR(255), user_password VARCHAR(255), profile_image TEXT, biometricData TEXT)',
               []
             );
           }
