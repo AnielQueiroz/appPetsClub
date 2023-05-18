@@ -30,7 +30,6 @@ export default function TelaDeLogin({ navigation }) {
 
   useEffect(() => {
     checkBiometry();
-    loadUsers();
   }, []);
 
   // Estado para controlar se a biometria está disponível e habilitada
@@ -47,31 +46,42 @@ export default function TelaDeLogin({ navigation }) {
   };
 
   const loadUsers = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM table_users ',
-        [],
-        (tx, res) => {
-          if (res.rows.length >= 0) {
-            const firstUser = res.rows.item(0);
-            setFirstUsers(firstUser);
-            // console.log(firstUser.user_email)
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM table_users',
+          [],
+          (tx, res) => {
+            const users = [];
+            for (let i = 0; i < res.rows.length; i++) {
+              const user = res.rows.item(i);
+              users.push(user);
+            }
+            resolve(users);
+          },
+          (error) => {
+            reject(error);
           }
-        }
-      )
-    })
-  }
-
+        );
+      });
+    });
+  };
+  
   const handleBiometryLogin = async () => {
     try {
       const { success } = await LocalAuthentication.authenticateAsync();
-
+  
       if (success) {
-        const foundUser = await validateUser(firstUser.user_name, firstUser.user_password);
-        if (foundUser) {
-          navigation.replace('Home', { user: foundUser });
+        const users = await loadUsers();
+        if (users.length > 0) {
+          const foundUser = await validateUser(users[0].user_name, users[0].user_password);
+          if (foundUser) {
+            navigation.replace('Home', { user: foundUser });
+          } else {
+            Alert.alert('Erro', 'Nome de usuário ou senha incorretos. Tente novamente.');
+          }
         } else {
-          Alert.alert('Erro', 'Nome de usuário ou senha incorretos. Tente novamente.');
+          Alert.alert('Erro', 'Não há usuários cadastrados.');
         }
       }
     } catch (error) {

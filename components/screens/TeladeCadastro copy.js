@@ -57,7 +57,15 @@ export default function TeladeLogin({ navigation }) {
     }
   }
 
-  async function handleCadastro() {
+  // function captureBiometricData() {
+  //   Alert.alert('Aaah', 'Desisto')
+  //   // Fingerprint.scan().then(result => {
+  //   //   console.log('BIOMETRIA => ', result.data)
+  //   //   setBiometricData(result.data);
+  //   // });
+  // }
+
+  function handleCadastro() {
     if( email === ''){
       setErroEmail('Preencha o email');
     }
@@ -79,59 +87,48 @@ export default function TeladeLogin({ navigation }) {
       return;
     }
   
-    try {
-      await new Promise((resolve, reject) => {
-        db.transaction((tx) => {
-          tx.executeSql(
-            'SELECT * FROM table_users WHERE user_name = ? OR user_email = ?',
-            [username, email],
-            (tx, results) => {
-              if (results.rows.length > 0) {
-                const user = results.rows.item(0);
-                if (user.user_email === email) {
-                  setErroEmail('Já existe um cadastro com esse email.');
-                } else if (user.user_name === username) {
-                  setErroUsername('Já existe um cadastro com esse usuário.');
-                }
-                reject(new Error('Usuário já cadastrado'));
-              } else {
-                tx.executeSql(
-                  'INSERT INTO table_users (user_name, user_email, user_password) VALUES (?,?,?)',
-                  [username, email, password],
-                  (tx, results) => {
-                    console.log('Results: ', results.rowsAffected);
-                    if (results.rowsAffected > 0) {
-                      resolve();
-                    } else {
-                      console.log(
-                        'Erro ao tentar registrar usuário:',
-                        results
-                      );
-                      reject(new Error('Erro ao registrar o usuário'));
-                    }
-                  }
-                );
-              }
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'SELECT * FROM table_users WHERE user_name = ? OR user_email = ?',
+        [username, email],
+        (tx, results) => {
+          if (results.rows.length > 0) {
+            const user = results.rows.item(0);
+            if (user.user_email === email) {
+              setErroEmail('Já existe um cadastro com esse email.')
+            } 
+            else if (user.user_name === username) {
+              setErroUsername('Já existe um cadastro com esse usuário.')
             }
-          );
-        });
-      });
-  
-      Alert.alert(
-        'Sucesso',
-        'Cadastro realizado com sucesso!',
-        [
-          {
-            text: 'Ok',
-            onPress: () => navigation.navigate('Tela de Login'),
-          },
-        ],
-        { cancelable: false }
-      );
-    } catch (error) {
-      console.log('Erro no handleCadastro:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao registrar o usuário. Por favor, tente novamente.');
-    }
+          } else {
+            db.transaction(function (tx) {
+              tx.executeSql(
+                'INSERT INTO table_users (user_name, user_email, user_password) VALUES (?,?,?)',
+                [username, email, password],
+                (tx, results) => {
+                  console.log('Results: ', results.rowsAffected);
+                  if (results.rowsAffected > 0) {
+                    Alert.alert(
+                      'Sucesso',
+                      'Cadastro realizado com sucesso!',
+                      [
+                        {text: 'Ok',
+                      onPress: () => navigation.navigate('Tela de Login'),
+                    },
+                      ],
+                      { cancelable: false }
+                    );
+                  } else{
+                    console.log('Erro ao tentar registrar usuário:', results);
+                    Alert.alert('Erro', 'Ocorreu um erro ao registrar o usuário. Por favor, tente novamente.');
+                  } 
+                }
+              );
+            });
+          }
+        }
+      )
+    })
   }
 
   return (
