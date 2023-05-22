@@ -5,8 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './styles';
 
 const PetDetailsScreen = ({ route }) => {
-  const { pet } = route.params;
-  console.log(pet);
+  const { pet, petLocation } = route.params;
+  console.log(petLocation);
 
   const handleTwitterPress = () => {
     // Verificar se o aplicativo do Twitter está instalado
@@ -23,7 +23,7 @@ const PetDetailsScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.containerPetDetails}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.viewImgPetDetails}>
           <Image style={styles.imagePetDetails} source={{ uri: pet.photo }} />
         </View>
@@ -37,6 +37,8 @@ const PetDetailsScreen = ({ route }) => {
           <Text style={styles.value}>{pet.category}</Text>
           <Text style={styles.label}>Gênero:</Text>
           <Text style={styles.value}>{pet.genus}</Text>
+          <Text style={styles.label}>Localização:</Text>
+          <Text style={styles.value}>{petLocation}</Text>
         </View>
         <View style={styles.detailsContainer}>
           <Text style={styles.heading}>Detalhes do Dono:</Text>

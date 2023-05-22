@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'space-evenly',
     backgroundColor: '#b8d6e3',
-    height: '64%',
+    height: '72%',
     // height: 400,
     width: width * 0.7,
     borderRadius: 5,
