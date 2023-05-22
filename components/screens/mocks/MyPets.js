@@ -3,7 +3,7 @@ import { Text, View, FlatList, Dimensions, Modal, Alert, TouchableOpacity, TextI
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Picker } from '@react-native-picker/picker';
 
-const racasDisponiveis = ['Poodle', 'Labrador', 'Bulldog', 'Golden Retriever', 'Vira-lata'];
+const racasDisponiveis = ['Selecione a Raça', 'Poodle', 'Labrador', 'Bulldog', 'Golden Retriever', 'Vira-lata'];
 const { width } = Dimensions.get('window');
 
 import PetModal from './PetModal/PetModal';
@@ -70,10 +70,14 @@ export default function MyPets({ route }) {
     }, []);
 
     // Adiciona um novo pet a um usuário existente com base no id do usuário
-    let insertPet = (petName, userid) => {
+    let insertPet = (petName, userid, selectedPet) => {
         console.log('PET => ', selectedPet);
         if (!petName) {
             Alert.alert('Aviso', 'Seu pet precisa de um nome.');
+            return;
+        }
+        else if (selectedPet === '' || selectedPet === 'Selecione a Raça'){
+            Alert.alert('Aviso', 'Agora precisa de uma raça.');
             return;
         }
         db.transaction(function (tx) {
@@ -85,6 +89,7 @@ export default function MyPets({ route }) {
                     if (results.rowsAffected > 0) {
                         Alert.alert('Sucesso', 'Seu pet foi adicionado a lista!');
                         setPetName('');
+                        setSelectedPet('');
                         loadPets();
                         // setPets(prevPets => [...prevPets, { pet_name: petName, user_id: userid}]);
                         setModalVisible(false);
@@ -207,7 +212,7 @@ export default function MyPets({ route }) {
                             <View style={styles.viewButtons}>
                                 <TouchableOpacity
                                     style={styles.buttonAdd}
-                                    onPress={() => insertPet(petName, userid) }
+                                    onPress={() => insertPet(petName, userid, selectedPet) }
                                 >
                                     <Text style={styles.buttonText}>Salvar</Text>
                                 </TouchableOpacity>
