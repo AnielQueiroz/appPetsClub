@@ -11,6 +11,11 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 25,
   },
+  buttonSwitch: {
+    alignItems: 'center',
+    padding: 20,
+    borderRadius: 8,
+  },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',

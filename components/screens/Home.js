@@ -16,6 +16,7 @@ import PetShopMapsComponent from './mocks/PetsShopMaps/PetShopMapsComponent';
 import Main from './mocks/Main';
 import MatchPetMainScreen from './mocks/MatchPet/Main';
 import { Perfil } from './SideBarComponents/Perfil/Perfil';
+import CentralAdocoes from './mocks/CentralAdocoes/Adocoes';
 
 function HomeScreen({ userid, username, email }) {
   return <Main userid={userid} username={username} email={email} />;
@@ -35,6 +36,12 @@ function PetShopMaps() {
 function MatchPetMain() {
   return (
     <MatchPetMainScreen />
+  )
+}
+
+function Adocoes() {
+  return(
+    <CentralAdocoes />
   )
 }
 
@@ -75,6 +82,12 @@ function SideBar({ userid, username, email, nav }) {
         <Drawer.Screen 
           name="Match Pet" 
           component={MatchPetMain} 
+          options={drawerScreenOptions}
+        />
+
+        <Drawer.Screen 
+          name='Central de adoções'
+          component={Adocoes}
           options={drawerScreenOptions}
         />
       </Drawer.Navigator>
